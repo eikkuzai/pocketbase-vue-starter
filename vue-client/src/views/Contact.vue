@@ -1,7 +1,7 @@
 <template>
-  <HelloWorld message="Contact" />
+  <Landing />
 </template>
 
 <script lang="ts" setup>
-  import HelloWorld from '@/components/HelloWorld.vue'
+  import Landing from '@/components/Landing.vue'
 </script>

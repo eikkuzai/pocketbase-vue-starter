@@ -16,7 +16,7 @@ export const useAppStore = defineStore("app", () => {
   const appSettings = ref(
     useLocalStorage("appSettings", {
       theme: "dark",
-      name: "PocketBase Vue Starter",
+      name: "WALKKi",
       isSetup: false,
     })
   );
@@ -61,5 +61,51 @@ export const useAppStore = defineStore("app", () => {
     }
   };
 
-  return { adminUserSetup, appSettings, checkIsSetup, registerAdmin };
+  interface RegisterFormData {
+    username: string;
+    name: string;
+    email: string;
+    password: string;
+    passwordConfirm: string;
+  }
+
+  const registerUser = async (data: RegisterFormData) => {
+    try {
+
+      const record = await pb?.collection('users').create(data);
+      console.log(record);
+      return record ? true : false;
+
+    } catch (e) {
+      throw new Error(
+        "Something whent wrong with processing the request. " +
+          "Please make sure that PocketBase is running and that the API is accessible."
+      );
+    }
+  };
+
+  interface LoginFormData {
+    username: string;
+    password: string;
+  }
+
+  const loginUser = async (data: LoginFormData) => {
+    try {
+      const authData = await pb?.collection('users').authWithPassword(data.username, data.password);
+
+      // after the above you can also access the auth data from the authStore
+      console.log(pb?.authStore.isValid);
+      console.log(pb?.authStore.token);
+      console.log(pb?.authStore.model?.id);
+      
+      return authData ? true : false;
+    } catch (e) {
+      throw new Error(
+        "Something whent wrong with processing the request. " +
+          "Please make sure that PocketBase is running and that the API is accessible."
+      );
+    }
+  }
+
+  return { adminUserSetup, appSettings, checkIsSetup, registerAdmin, registerUser, loginUser};
 });

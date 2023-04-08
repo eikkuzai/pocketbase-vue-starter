@@ -24,13 +24,13 @@
       <v-list-item v-for="item in items" :key="item.title" :to="item.value">{{ item.title }}</v-list-item>
     </v-list>
 
-    <!-- <template v-slot:append>
+    <template v-slot:append>
       <div class="pa-2">
-        <v-btn block :color="authStore.authenticated ? 'error' : 'success'" @click="logInLogOut">
-          {{ authStore.authenticated ? 'Logout' : 'Login' }}
+        <v-btn block :color="pb?.authStore.isValid ? 'error' : 'success'" @click="logInLogOut">
+          {{ pb?.authStore.isValid ? 'Logout' : 'Login' }}
         </v-btn>
       </div>
-    </template> -->
+    </template>
 </v-navigation-drawer>
 </template>
 
@@ -40,8 +40,9 @@ import vuetify from '@/plugins/vuetify';
 import { ref, inject } from 'vue'
 import { pocketBaseSymbol } from '@/pocketbase/injectionSymbols'
 import { useAppStore } from '@/store/app';
+import router from '@/router';
 
-// const pb = inject(pocketBaseSymbol)
+const pb = inject(pocketBaseSymbol)
 const appStore = useAppStore()
 
 const drawer = ref(!vuetify.display.smAndDown.value)
@@ -62,6 +63,14 @@ const items = ref([
 
 function changeTheme() {
   appStore.appSettings.theme = appStore.appSettings.theme === 'dark' ? 'light' : 'dark'
+}
+
+function logInLogOut() {
+  if (pb?.authStore.isValid) {
+    pb?.authStore.clear()
+  } else {
+    router.push('/login')
+  }
 }
 
 </script>
